@@ -13,11 +13,14 @@ import com.seedfinding.mccore.util.data.Triplet;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.loot.LootTable;
 
 import kludwisz.ancientcity.jigsawpools.AncientCityJigsawBlocks;
 import kludwisz.ancientcity.jigsawpools.AncientCityPools;
 import kludwisz.ancientcity.jigsawpools.PoolType;
+import kludwisz.ancientcity.structures.AncientCityStructureLoot;
 import kludwisz.ancientcity.structures.AncientCityStructureSize;
+import kludwisz.util.DecoratorRand;
 import kludwisz.util.Shuffler;
 import kludwisz.util.VoxelShape;
 
@@ -30,14 +33,16 @@ import java.util.*;
 public class AncientCityGenerator {
     public List<Piece> pieces;
     private static final int MAX_DIST = 116; // max distance from city anchor
+    private long worldseed;
     
     public AncientCityGenerator() {}
     
     public boolean generate(long worldseed, int chunkX, int chunkZ, ChunkRand rand) {
+    	this.worldseed = worldseed;
         pieces = new ArrayList<>();
 
         // choose random starting template and rotation
-        rand.setCarverSeed(worldseed, chunkX, chunkZ, MCVersion.v1_19); // version doesnt matter
+        rand.setCarverSeed(this.worldseed, chunkX, chunkZ, MCVersion.v1_19); // version doesnt matter
         BlockRotation rotation = BlockRotation.getRandom(rand);
         String template = rand.getRandom(START_POOL.getTemplates());
         BPos size = AncientCityStructureSize.STRUCTURE_SIZE.get(template);
@@ -78,10 +83,6 @@ public class AncientCityGenerator {
         }
         
         return true;
-    }
-
-    public List<Piece> getPieces() {
-        return this.pieces;
     }
 
     static public class Piece {
@@ -127,22 +128,6 @@ public class AncientCityGenerator {
             }
             Shuffler.shuffle(list, rand);
             return list;
-        }
-
-        public static BPos getTransformedPos(BPos targetPos, BlockRotation rotationIn) {
-            int i = targetPos.getX();
-            int j = targetPos.getY();
-            int k = targetPos.getZ();
-            switch(rotationIn) {
-                case COUNTERCLOCKWISE_90:
-                    return new BPos(k,j, -i);
-                case CLOCKWISE_90:
-                    return new BPos(-k,j, +i);
-                case CLOCKWISE_180:
-                    return new BPos(-i, j, -k);
-                default:
-                    return targetPos;
-            }
         }
         
         public void setVoxelShape(VoxelShape mutableobject1) {
@@ -366,4 +351,95 @@ public class AncientCityGenerator {
     }
 
     public static final JigSawPool START_POOL = new JigSawPool(AncientCityPools.CITY_POOLS.get(PoolType.CITY_CENTER).getSecond());
+
+    
+    // -------------------------
+    // SEEDFINDING UTILS
+    // -------------------------
+    
+    public List<Piece> getPieces() {
+        return this.pieces;
+    }
+    
+    public List<Pair<BPos, LootTable>> getChests() {
+    	ArrayList<Pair<BPos, LootTable>> result = new ArrayList<>();
+    	
+    	for (Piece p : this.pieces) {
+    		List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT.get(p.getName());
+    		if (chests==null || chests.size() == 0) 
+    			continue;
+    		
+    		for (Pair<BPos, LootTable> chest : chests) {
+    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN).add(new BPos(0,-1,0));
+    			BPos realChestPos = p.pos.add(rotatedOffset);
+    			result.add(new Pair<>(realChestPos, chest.getSecond()));
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    // TODO test this thoroughly
+    public List<Triplet<BPos, LootTable, Long>> getChestsWithLootSeeds() {
+    	ArrayList<Triplet<BPos, LootTable, Long>> result = new ArrayList<>();
+    	HashMap<CPos, DecoratorRand> chunkRandoms = new HashMap<>();
+    	//HashSet<CPos> compromisedChunks = new HashSet<>();
+    	
+    	for (Piece p : this.pieces) {
+    		//if (p.getName().equals("sculk_patch")) {
+    		//	compromisedChunks.add(p.pos.toChunkPos());
+    		//	continue;
+    		//}
+    		
+    		List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT.get(p.getName());
+    		if (chests==null || chests.size() == 0) 
+    			continue;	 
+
+    		for (Pair<BPos, LootTable> chest : chests) {
+    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN).add(new BPos(0,-1,0));
+    			BPos realChestPos = p.pos.add(rotatedOffset);
+    			CPos chestChunkPos = realChestPos.toChunkPos();
+    			//if (compromisedChunks.contains(chestChunkPos))
+    			//	continue;
+    			
+    			if (!chunkRandoms.containsKey(chestChunkPos)) {
+    				DecoratorRand rand = new DecoratorRand();
+    				long popseed = rand.getPopulationSeed(this.worldseed, chestChunkPos.getX()<<4, chestChunkPos.getZ()<<4);
+    				rand.setDecoratorSeed(popseed, 0, 7);
+    				chunkRandoms.put(chestChunkPos, rand);
+    			} 
+
+    			long lootseed = chunkRandoms.get(chestChunkPos).nextLong();
+				result.add(new Triplet<>(realChestPos, chest.getSecond(), lootseed));
+    		}
+    	}
+    	
+    	return result;
+    }
+    
+    public List<Triplet<CPos, LootTable, Integer>> getChestChunksWithRandCalls() {
+    	ArrayList<Triplet<CPos, LootTable, Integer>> result = new ArrayList<>();
+    	HashMap<CPos, Integer> callMap = new HashMap<>();
+    	
+    	for (Piece p : this.pieces) {
+    		List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT.get(p.getName());
+    		if (chests==null || chests.size() == 0) 
+    			continue;	 
+
+    		for (Pair<BPos, LootTable> chest : chests) {
+    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN);
+    			BPos realChestPos = p.pos.add(rotatedOffset);
+    			CPos chestChunkPos = realChestPos.toChunkPos();
+    			
+    			if (!callMap.containsKey(chestChunkPos)) {
+    				callMap.put(chestChunkPos, 0);
+    			} 
+
+    			int calls = callMap.get(chestChunkPos);
+    			callMap.put(chestChunkPos, calls+1);
+				result.add(new Triplet<>(chestChunkPos, chest.getSecond(), calls));
+    		}
+    	}
+    	return result;
+    }
 }

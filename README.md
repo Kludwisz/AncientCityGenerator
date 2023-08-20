@@ -9,4 +9,4 @@ Thanks to profotoce59 for their VillageGenerator library:  https://github.com/pr
 Use Jitpack:                                                                                                                                                        
 
 repositories { mavenCentral()  maven { url "https://www.jitpack.io" } }                                                                                      
-dependencies { implementation('com.github.Kludwisz:AncientCityGenerator:master-SNAPSHOT') { transitive = true } }
+dependencies { implementation('com.github.Kludwisz:AncientCityGenerator:master-SNAPSHOT') }

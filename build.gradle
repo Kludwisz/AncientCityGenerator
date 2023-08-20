@@ -35,9 +35,9 @@ dependencies {
     implementation('com.seedfinding:mc_feature:1.171.5') 	{ transitive = false }
 }
 
-java {
-    withSourcesJar()
-}
+//java {
+//    withSourcesJar()
+//}
 
 // configure the maven publication
 publishing {

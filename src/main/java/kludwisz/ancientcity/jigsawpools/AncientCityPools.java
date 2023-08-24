@@ -1,107 +1,102 @@
 package kludwisz.ancientcity.jigsawpools;
 
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 
 import com.seedfinding.mccore.util.data.Pair;
-import com.seedfinding.mccore.util.data.Triplet;
 
-import kludwisz.ancientcity.AncientCityGenerator;
+public class AncientCityPools {
+	
+    // fallback not necessary cause always empty
+    public static final List< List<Pair<Integer, Integer>> > CITY_POOLS_V2 = List.of(
+    		/*PoolType.pools\city_center.json*/ List.of(
+    				new Pair<>(6, 1),
+    				new Pair<>(7, 1),
+    				new Pair<>(8, 1)
+    		),
 
+    		/*PoolType.pools\city_center\walls.json*/ List.of(
+    				new Pair<>(9, 1),
+    				new Pair<>(10, 1),
+    				new Pair<>(11, 1),
+    				new Pair<>(13, 1),
+    				new Pair<>(14, 1),
+    				new Pair<>(15, 1),
+    				new Pair<>(16, 1),
+    				new Pair<>(17, 1),
+    				new Pair<>(19, 1),
+    				new Pair<>(18, 1)
+    		),
+    		
+    		/*PoolType.pools\sculk.json*/ List.of(
+    				new Pair<>(59, 6),
+    				new Pair<>(60, 1)
+    		),
 
-public interface AncientCityPools {
-	public static final EnumMap<PoolType, Pair< PoolType, List<Pair<String, Integer>> >> CITY_POOLS = new EnumMap<>(PoolType.class) {{
-		put(PoolType.CITY_ENTRANCE, new Pair<>(PoolType.EMPTY, Arrays.asList(
-        		new Pair<>("city/entrance/entrance_connector", 1),
-        		new Pair<>("city/entrance/entrance_path_1", 1),
-        		new Pair<>("city/entrance/entrance_path_2", 1),
-        		new Pair<>("city/entrance/entrance_path_3", 1),
-        		new Pair<>("city/entrance/entrance_path_4", 1),
-        		new Pair<>("city/entrance/entrance_path_5", 1)
-        )));
-		
-		put(PoolType.CITY_CENTER_WALLS, new Pair<>(PoolType.EMPTY, Arrays.asList(
-                new Pair<>("city_center/walls/bottom_1", 1),
-                new Pair<>("city_center/walls/bottom_2", 1),
-                new Pair<>("city_center/walls/bottom_left_corner", 1),
-                new Pair<>("city_center/walls/bottom_right_corner_1", 1),
-                new Pair<>("city_center/walls/bottom_right_corner_2", 1),
-                new Pair<>("city_center/walls/left", 1),
-                new Pair<>("city_center/walls/right", 1),
-                new Pair<>("city_center/walls/top", 1),
-                new Pair<>("city_center/walls/top_right_corner", 1),
-                new Pair<>("city_center/walls/top_left_corner", 1)
-                
-        )));
-		
-		put(PoolType.WALLS_NO_CORNERS, new Pair<>(PoolType.EMPTY, Arrays.asList(
-        		new Pair<>("walls/intact_horizontal_wall_1", 1),
-        		new Pair<>("walls/intact_horizontal_wall_2", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_1", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_2", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_3", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_4", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_5", 1), // missing structure nbt -> error
-        		new Pair<>("walls/intact_horizontal_wall_bridge", 1)
-        )));
-		
-		put(PoolType.CITY_CENTER, new Pair<>(PoolType.EMPTY, Arrays.asList(
-                new Pair<>("city_center/city_center_1", 1),
-                new Pair<>("city_center/city_center_2", 1),
-                new Pair<>("city_center/city_center_3", 1)
-        )));
-        
-        put(PoolType.SCULK, new Pair<>(PoolType.EMPTY, Arrays.asList(
-        		new Pair<>("sculk_patch", 6),
-        		new Pair<>("empty", 1)
-        )));
+    		/*PoolType.pools\structures.json*/ List.of(
+    				new Pair<>(60, 7),
+    				new Pair<>(20, 4),
+    				new Pair<>(24, 4),
+    				new Pair<>(25, 4),
+    				new Pair<>(26, 4),
+    				new Pair<>(33, 4),
+    				new Pair<>(36, 4),
+    				new Pair<>(29, 1),
+    				new Pair<>(37, 1),
+    				new Pair<>(38, 1),
+    				new Pair<>(39, 2),
+    				new Pair<>(40, 2),
+    				new Pair<>(22,1/*camp1*/),
+    				new Pair<>(31, 1),
+    				new Pair<>(32, 1),
+    				new Pair<>(34, 1),
+    				new Pair<>(35, 1),
+    				new Pair<>(28, 1),
+    				new Pair<>(30, 1),
+    				new Pair<>(27,1/*icebox*/)
+    		),
 
-        put(PoolType.STRUCTURES, new Pair<>(PoolType.EMPTY, Arrays.asList(
-        		new Pair<>("empty", 7),
-        		new Pair<>("structures/barracks", 4),
-        		new Pair<>("structures/chamber_1", 4),
-        		new Pair<>("structures/chamber_2", 4),
-        		new Pair<>("structures/chamber_3", 4),
-        		new Pair<>("structures/sauna_1", 4),
-        		new Pair<>("structures/small_statue", 4),
-        		new Pair<>("structures/large_ruin_1", 1),
-        		new Pair<>("structures/tall_ruin_1", 1),
-        		new Pair<>("structures/tall_ruin_2", 1),
-        		new Pair<>("structures/tall_ruin_3", 2),
-        		new Pair<>("structures/tall_ruin_4", 2),
-        		new Pair<>("structures/camp_1", 1),
-        		new Pair<>("structures/medium_ruin_1", 1),
-        		new Pair<>("structures/medium_ruin_2", 1),
-        		new Pair<>("structures/small_ruin_1", 1),
-        		new Pair<>("structures/small_ruin_2", 1),
-        		new Pair<>("structures/large_pillar_1", 1),
-        		new Pair<>("structures/medium_pillar_1", 1),
-        		new Pair<>("structures/ice_box_1", 1)
-        		
-        )));
+    		/*PoolType.pools\walls.json*/ List.of(
+    				new Pair<>(41, 1),
+    				new Pair<>(51, 1),
+    				new Pair<>(52, 1),
+    				new Pair<>(42, 1),
+    				new Pair<>(43, 1),
+    				new Pair<>(46, 1),
+    				new Pair<>(47, 1),
+    				new Pair<>(48, 1),
+    				new Pair<>(49, 4),
+    				new Pair<>(45, 3),
+    				new Pair<>(53, 1),
+    				new Pair<>(54, 1),
+    				new Pair<>(55, 2),
+    				new Pair<>(56, 2),
+    				new Pair<>(57, 3),
+    				new Pair<>(58, 3)
+    		),
 
-        put(PoolType.WALLS, new Pair<>(PoolType.EMPTY, Arrays.asList(
-        		new Pair<>("walls/intact_corner_wall_1", 1),
-        		new Pair<>("walls/intact_intersection_wall_1", 1),
-        		new Pair<>("walls/intact_lshape_wall_1", 1),
-        		new Pair<>("walls/intact_horizontal_wall_1", 1),
-        		new Pair<>("walls/intact_horizontal_wall_2", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_1", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_2", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_3", 1),
-        		new Pair<>("walls/intact_horizontal_wall_stairs_4", 4),
-        		new Pair<>("walls/intact_horizontal_wall_passage_1", 3),
-        		new Pair<>("walls/ruined_corner_wall_1", 1),
-        		new Pair<>("walls/ruined_corner_wall_2", 1),
-        		new Pair<>("walls/ruined_horizontal_wall_stairs_1", 2),
-        		new Pair<>("walls/ruined_horizontal_wall_stairs_2", 2),
-        		new Pair<>("walls/ruined_horizontal_wall_stairs_3", 3),
-        		new Pair<>("walls/ruined_horizontal_wall_stairs_4", 3)
-        )));
-        
-        put(PoolType.EMPTY, new Pair<>(PoolType.EMPTY, Arrays.asList(
-                new Pair<>("empty", 0)
-        )));
-    }};
+    		/*PoolType.pools\city\entrance.json*/ List.of(
+    				new Pair<>(0, 1),
+    				new Pair<>(1, 1),
+    				new Pair<>(2, 1),
+    				new Pair<>(3, 1),
+    				new Pair<>(4, 1),
+    				new Pair<>(5, 1)
+    		),
+
+    		/*PoolType.pools\walls\no_corners.json*/ List.of(
+    				new Pair<>(42, 1),
+    				new Pair<>(43, 1),
+    				new Pair<>(46, 1),
+    				new Pair<>(47, 1),
+    				new Pair<>(48, 1),
+    				new Pair<>(49, 1),
+    				new Pair<>(50, 1),
+    				new Pair<>(44, 1)
+    		),
+    		
+    		// pooltype.empty
+    		List.of(
+    				new Pair<>(60, 0)
+    		)
+    );
 }

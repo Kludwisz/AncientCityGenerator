@@ -6,8 +6,8 @@ plugins {
 
 def ENV = System.getenv()
 
-archivesBaseName = 'Kludwisz'
-group = 'Kludwisz'
+archivesBaseName = 'kludwisz'
+group = 'kludwisz'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -35,9 +35,9 @@ dependencies {
     implementation('com.seedfinding:mc_feature:1.171.5') 	{ transitive = false }
 }
 
-//java {
-//    withSourcesJar()
-//}
+java {
+    withSourcesJar()
+}
 
 // configure the maven publication
 publishing {

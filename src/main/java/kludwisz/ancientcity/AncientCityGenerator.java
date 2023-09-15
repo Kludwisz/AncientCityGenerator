@@ -89,7 +89,7 @@ public class AncientCityGenerator {
     static public class Piece {
     	int id;
         public BPos pos;
-        BlockBox box;
+        public BlockBox box;
         public BlockRotation rotation;
         private VoxelShape voxelShape;
         int depth;

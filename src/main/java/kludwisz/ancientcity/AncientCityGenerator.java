@@ -66,11 +66,11 @@ public class AncientCityGenerator {
         piece.move(0, y - centerY, 0);
         
         // create structure max bounding box
-        BlockBox fullBox = new BlockBox(centerX - MAX_DIST, y - MAX_DIST, centerZ - MAX_DIST, centerX + MAX_DIST + 1, y + MAX_DIST + 1, centerZ + MAX_DIST + 1);
+        BlockBox fullBox = new BlockBox(centerX - MAX_DIST, y - MAX_DIST, centerZ - MAX_DIST, centerX + MAX_DIST, y + MAX_DIST, centerZ + MAX_DIST);
         Assembler assembler = new Assembler(6, this.pieces, y);
         assembler.pieces.add(piece);
         VoxelShape a = new VoxelShape(fullBox);
-        a.fullBoxes.add(new BlockBox(box.minX,box.minY,box.minZ,box.maxX+1,box.maxY+1,box.maxZ+1));
+        a.inner.add(box);
         piece.voxelShape = a;
         
         // place pieces
@@ -99,7 +99,6 @@ public class AncientCityGenerator {
             this.pos = pos;
             this.box = box;
             this.rotation = rotation;
-            this.voxelShape = new VoxelShape(box);
             this.depth = depth;
         }
 
@@ -277,7 +276,7 @@ public class AncientCityGenerator {
 
                 if (pieceBox.contains(childJigsawPos)) {
                     if (pieceInnerFreeSpace == null) {
-                        pieceInnerFreeSpace = new VoxelShape(new BlockBox(pieceBox.minX, pieceBox.minY, pieceBox.minZ, pieceBox.maxX + 1, pieceBox.maxY + 1, pieceBox.maxZ + 1));
+                        pieceInnerFreeSpace = new VoxelShape(pieceBox);
                     }
                 	freeSpace = pieceInnerFreeSpace;
                 } else {
@@ -360,7 +359,7 @@ public class AncientCityGenerator {
                                 if (isNotEmpty(freeSpace,box3)) {
 //                                    Main.C += 1;
 
-                                	freeSpace.fullBoxes.add(new BlockBox(box3.minX, box3.minY, box3.minZ,box3.maxX+1, box3.maxY+1, box3.maxZ+1));
+                                	freeSpace.inner.add(box3);
                                             
                                     Piece piece2 = new Piece(jigsawpiece1,blockpos5,box3,rotation1,depth+1);
                                     
@@ -380,11 +379,11 @@ public class AncientCityGenerator {
         }
         
         private boolean isNotEmpty(VoxelShape voxelShape, BlockBox box1) {
-            if (box1.minX < voxelShape.outer.minX || box1.minY < voxelShape.outer.minY || box1.minZ < voxelShape.outer.minZ || box1.maxX >= voxelShape.outer.maxX || box1.maxY >= voxelShape.outer.maxY || box1.maxZ >= voxelShape.outer.maxZ) {
+            if (box1.minX < voxelShape.outer.minX || box1.minY < voxelShape.outer.minY || box1.minZ < voxelShape.outer.minZ || box1.maxX > voxelShape.outer.maxX || box1.maxY > voxelShape.outer.maxY || box1.maxZ > voxelShape.outer.maxZ) {
                 return false;
             }
 
-            for (BlockBox fullBox: voxelShape.fullBoxes){
+            for (BlockBox fullBox: voxelShape.inner){
 //            for (int i = voxelShape.fullBoxes.size() - 1; i >= 0; i--) {
 //                BlockBox fullBox = voxelShape.fullBoxes.get(i);
                 if(intersects2(box1,fullBox)){
@@ -395,7 +394,7 @@ public class AncientCityGenerator {
         }
         
         public static boolean intersects2(BlockBox box1, BlockBox box) {
-            return box1.maxX >= box.minX && box1.minX < box.maxX && box1.maxZ >= box.minZ && box1.minZ < box.maxZ && box1.maxY >= box.minY && box1.minY < box.maxY;
+            return box1.maxX >= box.minX && box1.minX <= box.maxX && box1.maxZ >= box.minZ && box1.minZ <= box.maxZ && box1.maxY >= box.minY && box1.minY <= box.maxY;
         }
     }
     

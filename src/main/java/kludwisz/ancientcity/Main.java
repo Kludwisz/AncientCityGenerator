@@ -102,12 +102,14 @@ public class Main {
 		for (int i = 0; i < 100; i++) {
 			long point1 = System.nanoTime();
 			long s = 0;
+			int maxPieces = 0;
 			AncientCityGenerator gen = new AncientCityGenerator();
 			for (int j = 0; j < total; j++) {
 				long seed = j;
 				CPos chunk = CITY.getInRegion(seed, 0, 0, rand);
 				gen.generate(seed, chunk.getX(), chunk.getZ(), rand);
 				s ^= rand.getSeed();
+				if (gen.piecesLen > maxPieces) maxPieces = gen.piecesLen;
 //				List<Triplet<BPos, LootTable, Long>> chests = gen.getChestsWithLootSeeds();
 			}
 			long point2 = System.nanoTime();
@@ -117,6 +119,7 @@ public class Main {
 				System.out.println(A + " " + B + " " + C);
 				System.out.println(1.0 * A / B + " " + 1.0 * B / C);
 				System.out.println(1.0 * A / C);
+				System.out.println("Max pieces: " + maxPieces);
 			}
 
 			System.out.println(total / ((point2 - point1) / 1000000000.0) + " sps");

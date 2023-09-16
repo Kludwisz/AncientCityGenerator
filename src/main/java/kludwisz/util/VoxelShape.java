@@ -9,7 +9,13 @@ public class VoxelShape {
     public BlockBox outer;
     public List<BlockBox> cutout = new ArrayList<>();
 
-    public VoxelShape(BlockBox box) {
-        outer = box;
+    public VoxelShape() {
+
+    }
+
+    public VoxelShape init(BlockBox box) {
+        this.outer = box;
+        this.cutout.clear();
+        return this;
     }
 }

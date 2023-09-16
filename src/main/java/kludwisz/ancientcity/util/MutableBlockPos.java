@@ -4,6 +4,8 @@ import com.seedfinding.mccore.util.block.BlockRotation;
 import com.seedfinding.mccore.util.pos.BPos;
 
 public class MutableBlockPos {
+    public static final MutableBlockPos ORIGIN = new MutableBlockPos();
+
     public int x;
     public int y;
     public int z;
@@ -12,36 +14,48 @@ public class MutableBlockPos {
 
     }
 
-    public void set(BPos pos) {
-        this.x = pos.getX();
-        this.y = pos.getY();
-        this.z = pos.getZ();
+    public BPos toImmutable() {
+        return new BPos(this.x, this.y, this.z);
     }
 
-    public void setRotateOffset(BPos pos, BlockRotation rotation, BPos pivot, BPos offset) {
-        int px = pivot.getX();
-        int pz = pivot.getZ();
+    public void set(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void set(BPos pos) {
+        this.set(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public void setRotateOffset(BPos point, BlockRotation rotation, MutableBlockPos offset) {
         switch (rotation) {
+            case NONE -> {
+                this.x = offset.x + point.getX();
+                this.y = offset.y + point.getY();
+                this.z = offset.z + point.getZ();
+            }
             case CLOCKWISE_90 -> {
-                this.x = px + pz - pos.getZ() + offset.getX();
-                this.y = pos.getY() + offset.getY();
-                this.z = pz - px + pos.getX() + offset.getZ();
+                this.x = offset.x - point.getZ();
+                this.y = offset.y + point.getY();
+                this.z = offset.z + point.getX();
             }
             case CLOCKWISE_180 -> {
-                this.x = px + px - pos.getX() + offset.getX();
-                this.y = pos.getY() + offset.getY();
-                this.z = pz + pz - pos.getZ() + offset.getZ();
+                this.x = offset.x - point.getX();
+                this.y = offset.y + point.getY();
+                this.z = offset.z - point.getZ();
             }
             case COUNTERCLOCKWISE_90 -> {
-                this.x = px - pz + pos.getZ() + offset.getX();
-                this.y = pos.getY() + offset.getY();
-                this.z = px + pz - pos.getX() + offset.getZ();
-            }
-            default -> {
-                this.x = pos.getX() + offset.getX();
-                this.y = pos.getY() + offset.getY();
-                this.z = pos.getZ() + offset.getZ();
+                this.x = offset.x + point.getZ();
+                this.y = offset.y + point.getY();
+                this.z = offset.z - point.getX();
             }
         }
+    }
+
+    public void move(int x, int y, int z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
     }
 }

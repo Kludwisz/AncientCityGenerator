@@ -379,9 +379,10 @@ public static HashMap<String, Set<BlockDirection>>[] PIECE_CONNECTION_DIRECTIONS
 		for (int i = 0; i < JIGSAW_BLOCKS_V2.size(); i++) {
 			PIECE_CONNECTION_DIRECTIONS[i] = new HashMap<>();
 			for (JigsawBlock block : JIGSAW_BLOCKS_V2.get(i)) {
-//				if (ignoredNames.contains(block.name)) continue;
-
 				PIECE_CONNECTION_DIRECTIONS[i].computeIfAbsent(block.name, (p) -> new HashSet<>()).add(AncientCityGenerator.BlockJigsawInfo.getOpposite(block.direction1));
+			}
+			for (Map.Entry<String, Set<BlockDirection>> entry : PIECE_CONNECTION_DIRECTIONS[i].entrySet()) {
+				entry.setValue(EnumSet.copyOf(entry.getValue()));
 			}
 		}
 	}

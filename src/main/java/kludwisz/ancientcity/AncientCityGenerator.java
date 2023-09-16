@@ -46,6 +46,7 @@ public class AncientCityGenerator {
     private final int[] childTemplatesArr = new int[46];
     private final BlockRotation[] childRotationsArr = new BlockRotation[4];
     private final MutableBlockPos childJigsawPos = new MutableBlockPos();
+    private final BlockBox childPieceMinBox = BlockBox.empty();
 
     public AncientCityGenerator() {
         for (int i = 0; i < this.pieces.length; i++) {
@@ -113,13 +114,14 @@ public class AncientCityGenerator {
     }
 
     public void tryPlacing(Piece parentPiece, ChunkRand rand) {
+        int parentPieceId = parentPiece.id;
         int parentPieceDepth = parentPiece.depth;
         MutableBlockPos parentPiecePos = parentPiece.pos;
         VoxelShape parentPieceInnerFreeSpace = null;
         BlockBox parentPieceBox = parentPiece.box;
 
         BlockJigsawInfo[] parentJigsaws = this.parentJigsawsArr;
-        int parentJigsawsLen = getShuffledJigsawBlocks(rand, parentJigsaws, parentPiece.id, parentPiece.rotation, parentPiecePos);
+        int parentJigsawsLen = getShuffledJigsawBlocks(rand, parentJigsaws, parentPieceId, parentPiece.rotation, parentPiecePos);
         nextParentJigsaw:
         for (int parentJigsawIndex = 0; parentJigsawIndex < parentJigsawsLen; parentJigsawIndex++) {
             BlockJigsawInfo parentJigsaw = parentJigsaws[parentJigsawIndex];
@@ -149,7 +151,14 @@ public class AncientCityGenerator {
 
             if (parentPieceDepth == MAX_DEPTH) continue;
 
-            Main.A += 1;
+            boolean skip = false;
+            BlockBox childPieceMinBox = AncientCityJigsawBlocks.PIECE_TARGET_MIN_BOXES[parentPieceId].get(parentJigsaw.nbt.targetName);
+            if (childPieceMinBox != null) {
+                BlockBoxUtil.setRotateMove(this.childPieceMinBox, childPieceMinBox, parentPiece.rotation, childJigsawPos);
+                if (!isInsideFreeSpace(freeSpace, this.childPieceMinBox)) {
+                    skip = true;
+                }
+            }
 
             int[] childTemplates = this.childTemplatesArr;
             int childTemplatesLen = getShuffledTemplatesFromPool(rand, parentJigsaw.nbt.poolType, childTemplates);
@@ -159,7 +168,7 @@ public class AncientCityGenerator {
                     break;
 
                 Set<BlockDirection> directions = AncientCityJigsawBlocks.PIECE_CONNECTION_DIRECTIONS[childPieceId].get(parentJigsaw.nbt.targetName);
-                if (directions == null) {
+                if (directions == null || skip) {
                     Main.skipShuffle(rand, 4);
                     for (int i = 0; i < 4; i++) {
                         Main.skipShuffle(rand, AncientCityJigsawBlocks.JIGSAW_BLOCKS_V2.get(childPieceId).size());
@@ -187,44 +196,44 @@ public class AncientCityGenerator {
                     int len2 = getShuffledJigsawBlocks(rand, arr2, childPieceId, childPieceRotation, MutableBlockPos.ORIGIN);
                     for (int ji2 = 0; ji2 < len2; ji2++) {
                         BlockJigsawInfo childJigsaw = arr2[ji2];
-//                            Main.A += 1;
+                        Main.A += 1;
 
-                        if (parentJigsaw.canAttach(childJigsaw, parentJigsawFront)) {
-//                                Main.B += 1;
+                        if (!parentJigsaw.canAttach(childJigsaw, parentJigsawFront)) continue;
 
-                            MutableBlockPos childJigsawOffset = childJigsaw.pos;
-                            childPiecePos.set(
-                                    this.childJigsawPos.x - childJigsawOffset.x,
-                                    this.childJigsawPos.y - childJigsawOffset.y,
-                                    this.childJigsawPos.z - childJigsawOffset.z
-                            );
+                        Main.B += 1;
 
-                            if (childPieceSize.getX() < 1 || childPieceSize.getY() < 1 || childPieceSize.getZ() < 1) {
-                                BlockBoxUtil.set(childPieceBox, childPiecePos);
-                            } else {
-                                BlockBoxUtil.setSizeRotatePos(childPieceBox, childPieceSize, childPieceRotation, childPiecePos);
-                            }
+                        MutableBlockPos childJigsawOffset = childJigsaw.pos;
+                        childPiecePos.set(
+                                this.childJigsawPos.x - childJigsawOffset.x,
+                                this.childJigsawPos.y - childJigsawOffset.y,
+                                this.childJigsawPos.z - childJigsawOffset.z
+                        );
 
-                            if (isInsideFreeSpace(freeSpace, childPieceBox)) {
-//                                    Main.C += 1;
-
-                                freeSpace.cutout.add(childPieceBox);
-
-                                int childPieceDepth = parentPieceDepth + 1;
-                                childPiece.id = childPieceId;
-                                childPiece.rotation = childPieceRotation;
-                                childPiece.depth = childPieceDepth;
-                                childPiece.freeSpace = freeSpace;
-
-                                this.piecesLen += 1;
-
-                                if (childPieceDepth <= MAX_DEPTH){
-                                    this.placing.addLast(childPiece);
-                                }
-
-                                continue nextParentJigsaw;
-                            }
+                        if (childPieceSize.getX() < 1 || childPieceSize.getY() < 1 || childPieceSize.getZ() < 1) {
+                            BlockBoxUtil.set(childPieceBox, childPiecePos);
+                        } else {
+                            BlockBoxUtil.setSizeRotatePos(childPieceBox, childPieceSize, childPieceRotation, childPiecePos);
                         }
+
+                        if (!isInsideFreeSpace(freeSpace, childPieceBox)) continue;
+
+                        Main.C += 1;
+
+                        freeSpace.cutout.add(childPieceBox);
+
+                        int childPieceDepth = parentPieceDepth + 1;
+                        childPiece.id = childPieceId;
+                        childPiece.rotation = childPieceRotation;
+                        childPiece.depth = childPieceDepth;
+                        childPiece.freeSpace = freeSpace;
+
+                        this.piecesLen += 1;
+
+                        if (childPieceDepth <= MAX_DEPTH){
+                            this.placing.addLast(childPiece);
+                        }
+
+                        continue nextParentJigsaw;
                     }
                 }
             }

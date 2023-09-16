@@ -18,14 +18,15 @@ public class MutableBlockPos {
         return new BPos(this.x, this.y, this.z);
     }
 
-    public void set(int x, int y, int z) {
+    public MutableBlockPos set(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
+        return this;
     }
 
-    public void set(BPos pos) {
-        this.set(pos.getX(), pos.getY(), pos.getZ());
+    public MutableBlockPos set(BPos pos) {
+        return this.set(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public void setRotateOffset(BPos point, BlockRotation rotation, MutableBlockPos offset) {

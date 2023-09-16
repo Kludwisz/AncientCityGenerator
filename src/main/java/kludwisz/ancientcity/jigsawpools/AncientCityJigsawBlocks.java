@@ -2,10 +2,15 @@ package kludwisz.ancientcity.jigsawpools;
 
 import java.util.*;
 
+import com.seedfinding.mccore.util.block.BlockBox;
 import com.seedfinding.mccore.util.block.BlockDirection;
+import com.seedfinding.mccore.util.block.BlockRotation;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
 import kludwisz.ancientcity.AncientCityGenerator;
+import kludwisz.ancientcity.structures.AncientCityStructureSize;
+import kludwisz.ancientcity.util.BlockBoxUtil;
+import kludwisz.ancientcity.util.MutableBlockPos;
 
 public class AncientCityJigsawBlocks {
     public static final List<List<JigsawBlock>> JIGSAW_BLOCKS_V2 = List.of(
@@ -374,7 +379,7 @@ public class AncientCityJigsawBlocks {
 //		}
 //	}
 
-public static HashMap<String, Set<BlockDirection>>[] PIECE_CONNECTION_DIRECTIONS = new HashMap[JIGSAW_BLOCKS_V2.size()];
+	public static HashMap<String, Set<BlockDirection>>[] PIECE_CONNECTION_DIRECTIONS = new HashMap[JIGSAW_BLOCKS_V2.size()];
 	static {
 		for (int i = 0; i < JIGSAW_BLOCKS_V2.size(); i++) {
 			PIECE_CONNECTION_DIRECTIONS[i] = new HashMap<>();
@@ -384,6 +389,47 @@ public static HashMap<String, Set<BlockDirection>>[] PIECE_CONNECTION_DIRECTIONS
 			for (Map.Entry<String, Set<BlockDirection>> entry : PIECE_CONNECTION_DIRECTIONS[i].entrySet()) {
 				entry.setValue(EnumSet.copyOf(entry.getValue()));
 			}
+		}
+	}
+
+	public static HashMap<String, BlockBox>[] PIECE_TARGET_MIN_BOXES = new HashMap[JIGSAW_BLOCKS_V2.size()];
+	static {
+		for (int i = 0; i < JIGSAW_BLOCKS_V2.size(); i++) {
+			HashMap<String, BlockBox> targetMinBoxes = new HashMap<>();
+
+			for (JigsawBlock parentJigsaw : JIGSAW_BLOCKS_V2.get(i)) {
+				BlockBox minBox = targetMinBoxes.get(parentJigsaw.targetName);
+
+				for (Pair<Integer, Integer> pair : AncientCityPools.CITY_POOLS_V2.get(parentJigsaw.poolType)) {
+					int childPieceId = pair.getFirst();
+					if (childPieceId == 60) continue;
+
+					BPos childPieceSize = AncientCityStructureSize.STRUCTURE_SIZE_V2.get(childPieceId);
+					if (childPieceSize.getX() < 1 || childPieceSize.getY() < 1 || childPieceSize.getZ() < 1) continue;
+
+					for (BlockRotation childPieceRotation : BlockRotation.values()) {
+						for (JigsawBlock childJigsaw : JIGSAW_BLOCKS_V2.get(childPieceId)) {
+							if (!childJigsaw.name.equals(parentJigsaw.targetName)) continue;
+							if (childPieceRotation.rotate(childJigsaw.direction1) != parentJigsaw.direction1.getOpposite()) continue;
+
+							BlockBox childPieceBox = new BlockBox(0, 0, 0, 0, 0, 0);
+							BlockBoxUtil.setSizeRotatePos(childPieceBox, childPieceSize, childPieceRotation, new MutableBlockPos().set(BPos.ORIGIN.subtract(childPieceRotation.rotate(childJigsaw.relativePos, BPos.ORIGIN))));
+
+							if (minBox == null) {
+								minBox = childPieceBox;
+							} else {
+								BlockBoxUtil.intersect(minBox, childPieceBox);
+							}
+						}
+					}
+				}
+
+				if (minBox != null && !BlockBoxUtil.isEmpty(minBox)) {
+					targetMinBoxes.put(parentJigsaw.targetName, minBox);
+				}
+			}
+
+			PIECE_TARGET_MIN_BOXES[i] = targetMinBoxes;
 		}
 	}
 }

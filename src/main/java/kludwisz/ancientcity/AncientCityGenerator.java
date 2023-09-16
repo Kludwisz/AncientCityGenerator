@@ -35,12 +35,15 @@ public class AncientCityGenerator {
     private static final int MAX_DIST = 116; // max distance from city anchor
     public static final int MAX_DEPTH = 6;
 
+    public static final BlockRotation[] BLOCK_ROTATIONS = BlockRotation.values();
+
     public final Piece[] pieces = new Piece[256];
     public final VoxelShape[] voxelShapes = new VoxelShape[256];
     public int piecesLen;
     private long worldseed;
     public final Deque<Piece> placing = new ArrayDeque<>();
 
+    private final BlockBox rootBox = BlockBox.empty();
     private final BlockJigsawInfo[] parentJigsawsArr = new BlockJigsawInfo[5];
     private final BlockJigsawInfo[] childPieceJigsawBlocksArr = new BlockJigsawInfo[5];
     private final int[] childTemplatesArr = new int[46];
@@ -62,45 +65,43 @@ public class AncientCityGenerator {
         }
     }
     
-    public boolean generate(long worldseed, int chunkX, int chunkZ, ChunkRand rand) {
+    public void generate(long worldseed, int chunkX, int chunkZ, ChunkRand rand) {
         this.piecesLen = 0;
         this.worldseed = worldseed;
 
         // choose random starting template and rotation
         rand.setCarverSeed(this.worldseed, chunkX, chunkZ, MCVersion.v1_19); // version doesnt matter
-        BlockRotation rotation = BlockRotation.getRandom(rand);
-        int template = START_TEMPLATES[rand.nextInt(START_TEMPLATES.length)];
-        BPos size = AncientCityStructureSize.STRUCTURE_SIZE_V2.get(template);
+        BlockRotation startPieceRotation = rand.getRandom(BLOCK_ROTATIONS);
+        int startPieceId = START_TEMPLATES[rand.nextInt(START_TEMPLATES.length)];
+        BPos startPieceSize = AncientCityStructureSize.STRUCTURE_SIZE_V2.get(startPieceId);
         
         // STARTING JIGSAW:
         // For ancient cities, there is only 1 starting jigsaw at the same position in all structure starts, so we can use
         // this shortened version of getRandomNamedJigsaw() that uses precalculated values
-        BPos invertedStartJigsawPos = new BPos(-13, -24, -20).transform(BlockMirror.NONE, rotation, BPos.ORIGIN);
-        for (int i = 5; i > 1; --i)
-        	rand.nextInt(i);
+        Main.skipShuffle(rand, 5);
 
         // moving startPos by the relative position of ancient city anchor to get correct bounding boxes
-        BPos startPiecePos = new CPos(chunkX, chunkZ).toBlockPos(-27).add(invertedStartJigsawPos);
-        BlockBox startPieceBox = BlockBox.getBoundingBox(startPiecePos, rotation, BPos.ORIGIN, BlockMirror.NONE, size);
+        Piece startPiece = this.pieces[this.piecesLen];
+        MutableBlockPos startPiecePos = startPiece.pos;
+        startPiecePos.set(-13, -24, -20).rotate(startPieceRotation).offset(chunkX << 4, -27, chunkZ << 4);
+        BlockBox startPieceBox = startPiece.box;
+        BlockBoxUtil.setSizeRotatePos(startPieceBox, startPieceSize, startPieceRotation, startPiecePos);
         int centerX = (startPieceBox.minX + startPieceBox.maxX) / 2;
         int centerZ = (startPieceBox.minZ + startPieceBox.maxZ) / 2;
         int centerY = startPieceBox.minY + 1;
-        int y = startPiecePos.getY() + 1;
+        int y = startPiecePos.y + 1;
 
         // create the first piece
-        Piece startPiece = this.pieces[this.piecesLen];
-        startPiece.id = template;
-        startPiece.pos.set(startPiecePos);
+        startPiece.id = startPieceId;
         BlockBoxUtil.set(startPiece.box, startPieceBox);
-        startPiece.rotation = rotation;
+        startPiece.rotation = startPieceRotation;
         startPiece.depth = 0;
         startPiece.move(0, y - centerY, 0);
 
         // create structure max bounding box
-        BlockBox maxDistanceBox = new BlockBox(centerX - MAX_DIST, y - MAX_DIST, centerZ - MAX_DIST, centerX + MAX_DIST, y + MAX_DIST, centerZ + MAX_DIST);
         this.placing.clear();
         this.piecesLen++;
-        VoxelShape rootFreeSpace = this.voxelShapes[255].init(maxDistanceBox);
+        VoxelShape rootFreeSpace = this.voxelShapes[255].init(BlockBoxUtil.set(this.rootBox, centerX - MAX_DIST, y - MAX_DIST, centerZ - MAX_DIST, centerX + MAX_DIST, y + MAX_DIST, centerZ + MAX_DIST));
         rootFreeSpace.cutout.add(startPieceBox);
         startPiece.freeSpace = rootFreeSpace;
         
@@ -109,8 +110,6 @@ public class AncientCityGenerator {
         while (!this.placing.isEmpty()) {
             this.tryPlacing(this.placing.removeFirst(), rand);
         }
-        
-        return true;
     }
 
     public void tryPlacing(Piece parentPiece, ChunkRand rand) {
@@ -280,7 +279,7 @@ public class AncientCityGenerator {
         }
 
         public void move(int x, int y, int z) {
-            this.pos.move(x, y, z);
+            this.pos.offset(x, y, z);
             this.box.move(x, y, z);
         }
     }

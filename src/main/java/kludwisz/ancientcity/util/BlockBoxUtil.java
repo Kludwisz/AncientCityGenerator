@@ -5,22 +5,22 @@ import com.seedfinding.mccore.util.block.BlockRotation;
 import com.seedfinding.mccore.util.pos.BPos;
 
 public class BlockBoxUtil {
-    public static void set(BlockBox box, MutableBlockPos pos) {
-        box.minX = pos.x;
-        box.minY = pos.y;
-        box.minZ = pos.z;
-        box.maxX = pos.x;
-        box.maxY = pos.y;
-        box.maxZ = pos.z;
+    public static BlockBox set(BlockBox box, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
+        box.minX = minX;
+        box.minY = minY;
+        box.minZ = minZ;
+        box.maxX = maxX;
+        box.maxY = maxY;
+        box.maxZ = maxZ;
+        return box;
     }
 
-    public static void set(BlockBox box, BlockBox other) {
-        box.minX = other.minX;
-        box.minY = other.minY;
-        box.minZ = other.minZ;
-        box.maxX = other.maxX;
-        box.maxY = other.maxY;
-        box.maxZ = other.maxZ;
+    public static BlockBox set(BlockBox box, MutableBlockPos pos) {
+        return set(box, pos.x, pos.y, pos.z, pos.x, pos.y, pos.z);
+    }
+
+    public static BlockBox set(BlockBox box, BlockBox other) {
+        return set(box, other.minX, other.minY, other.minZ, other.maxX, other.maxY, other.maxZ);
     }
 
     public static void setOffset(BlockBox box, BlockBox other, MutableBlockPos offset) {

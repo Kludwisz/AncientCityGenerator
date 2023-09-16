@@ -29,6 +29,34 @@ public class MutableBlockPos {
         return this.set(pos.getX(), pos.getY(), pos.getZ());
     }
 
+    public MutableBlockPos rotate(BlockRotation rotation) {
+        switch (rotation) {
+            case NONE -> {
+
+            }
+            case CLOCKWISE_90 -> {
+                this.x = -this.z;
+                this.z = this.x;
+            }
+            case CLOCKWISE_180 -> {
+                this.x = -this.x;
+                this.z = -this.z;
+            }
+            case COUNTERCLOCKWISE_90 -> {
+                this.x = this.z;
+                this.z = -this.x;
+            }
+        }
+        return this;
+    }
+
+    public MutableBlockPos offset(int x, int y, int z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
     public void setRotateOffset(BPos point, BlockRotation rotation, MutableBlockPos offset) {
         switch (rotation) {
             case NONE -> {
@@ -52,11 +80,5 @@ public class MutableBlockPos {
                 this.z = offset.z - point.getX();
             }
         }
-    }
-
-    public void move(int x, int y, int z) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
     }
 }

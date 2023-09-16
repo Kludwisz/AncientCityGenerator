@@ -19,7 +19,7 @@ public class Main {
 	public static int B;
 	public static int C;
 
-	public static int[] MAX_NEXT_INT_SEEDS = new int[6];
+	public static final int[] MAX_NEXT_INT_SEEDS = new int[6];
 	static {
 		for (int i = 1; i < MAX_NEXT_INT_SEEDS.length; i++) {
 			int maxSeed = 1 << 31;
@@ -27,36 +27,38 @@ public class Main {
 			MAX_NEXT_INT_SEEDS[i] = maxSeed;
 		}
 	}
+	public static final int MAX_NEXT_INT_SEEDS_5 = MAX_NEXT_INT_SEEDS[5];
+	public static final int MAX_NEXT_INT_SEEDS_3 = MAX_NEXT_INT_SEEDS[3];
 
 	public static void skipShuffle(JRand rand, int size) {
 //		if (size > C) {
 //			C = size;
 //			System.out.println("C: " + C);
 //		}
-		for (int i = size; i > 1; i--) {
-//			rand.nextInt(i);
-			while (rand.next(31) > MAX_NEXT_INT_SEEDS[i]);
-		}
-//		switch (size) {
-//			case 5:
-//				while (rand.next(31) > MAX_NEXT_INT_SEEDS[5]);
-//				rand.nextSeed();
-//				while (rand.next(31) > MAX_NEXT_INT_SEEDS[3]);
-//				rand.nextSeed();
-//				break;
-//			case 4:
-//				rand.nextSeed();
-//				while (rand.next(31) > MAX_NEXT_INT_SEEDS[3]);
-//				rand.nextSeed();
-//				break;
-//			case 3:
-//				while (rand.next(31) > MAX_NEXT_INT_SEEDS[3]);
-//				rand.nextSeed();
-//				break;
-//			case 2:
-//				rand.nextSeed();
-//				break;
+//		for (int i = size; i > 1; i--) {
+////			rand.nextInt(i);
+//			while (rand.next(31) > MAX_NEXT_INT_SEEDS[i]);
 //		}
+		switch (size) {
+			case 5:
+				while (rand.next(31) > MAX_NEXT_INT_SEEDS_5);
+				rand.nextSeed();
+				while (rand.next(31) > MAX_NEXT_INT_SEEDS_3);
+				rand.nextSeed();
+				break;
+			case 4:
+				rand.nextSeed();
+				while (rand.next(31) > MAX_NEXT_INT_SEEDS_3);
+				rand.nextSeed();
+				break;
+			case 3:
+				while (rand.next(31) > MAX_NEXT_INT_SEEDS_3);
+				rand.nextSeed();
+				break;
+			case 2:
+				rand.nextSeed();
+				break;
+		}
 //		rand.advance(size - 1);
 	}
 

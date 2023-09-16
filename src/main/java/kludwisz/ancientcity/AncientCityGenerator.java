@@ -120,6 +120,11 @@ public class AncientCityGenerator {
         VoxelShape parentPieceInnerFreeSpace = null;
         BlockBox parentPieceBox = parentPiece.box;
 
+        if (parentPieceDepth == MAX_DEPTH) {
+            Main.skipShuffle(rand, AncientCityJigsawBlocks.JIGSAW_BLOCKS_V2.get(parentPieceId).size());
+            return;
+        }
+
         BlockJigsawInfo[] parentJigsaws = this.parentJigsawsArr;
         int parentJigsawsLen = getShuffledJigsawBlocks(rand, parentJigsaws, parentPieceId, parentPiece.rotation, parentPiecePos);
         nextParentJigsaw:
@@ -148,8 +153,6 @@ public class AncientCityGenerator {
             } else {
                 freeSpace = parentPiece.freeSpace;
             }
-
-            if (parentPieceDepth == MAX_DEPTH) continue;
 
             boolean skip = false;
             BlockBox childPieceMinBox = AncientCityJigsawBlocks.PIECE_TARGET_MIN_BOXES[parentPieceId].get(parentJigsaw.nbt.targetName);

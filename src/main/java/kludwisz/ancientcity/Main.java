@@ -88,17 +88,38 @@ public class Main {
 //			B = arr.length;
 //			System.out.println("B: " + B);
 //		}
-		for (int i = len; i > 1; i--) {
-			int j = rand.nextInt(i);
-			Object tmp = arr[i - 1];
-			arr[i - 1] = arr[j];
-			arr[j] = tmp;
+		switch (len) {
+			case 5: {
+				int j = rand.nextInt(5);
+				Object tmp = arr[4];
+				arr[4] = arr[j];
+				arr[j] = tmp;
+			}
+			case 4: {
+				int j = rand.nextInt(4);
+				Object tmp = arr[3];
+				arr[3] = arr[j];
+				arr[j] = tmp;
+			}
+			case 3: {
+				int j = rand.nextInt(3);
+				Object tmp = arr[2];
+				arr[2] = arr[j];
+				arr[j] = tmp;
+			}
+			case 2: {
+				int j = rand.nextInt(2);
+				Object tmp = arr[1];
+				arr[1] = arr[j];
+				arr[j] = tmp;
+			}
 		}
 	}
 
 	public static void testTime() {
 		int total = 1000;
 
+		double maxSps = 0;
 		for (int i = 0; i < 100; i++) {
 			long point1 = System.nanoTime();
 			long s = 0;
@@ -122,7 +143,11 @@ public class Main {
 				System.out.println("Max pieces: " + maxPieces);
 			}
 
-			System.out.println(total / ((point2 - point1) / 1000000000.0) + " sps");
+			double sps = total / ((point2 - point1) / 1000000000.0);
+			maxSps = Math.max(maxSps, sps);
+			System.out.println(sps + " sps");
 		}
+
+		System.out.println("Max: " + maxSps + " sps");
 	}
 }

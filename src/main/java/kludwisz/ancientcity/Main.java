@@ -100,10 +100,10 @@ public class Main {
 		for (int i = 0; i < 100; i++) {
 			long point1 = System.nanoTime();
 			long s = 0;
+			AncientCityGenerator gen = new AncientCityGenerator();
 			for (int j = 0; j < total; j++) {
 				long seed = j;
 				CPos chunk = CITY.getInRegion(seed, 0, 0, rand);
-				AncientCityGenerator gen = new AncientCityGenerator();
 				gen.generate(seed, chunk.getX(), chunk.getZ(), rand);
 				s ^= rand.getSeed();
 //				List<Triplet<BPos, LootTable, Long>> chests = gen.getChestsWithLootSeeds();

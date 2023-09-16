@@ -30,15 +30,17 @@ import kludwisz.util.VoxelShape;
 // https://github.com/profotoce59/VillageGenerator
 
 public class AncientCityGenerator {
-    public List<Piece> pieces;
     private static final int MAX_DIST = 116; // max distance from city anchor
+
+    public List<Piece> pieces = new ArrayList<>();
     private long worldseed;
-    
+    public final Assembler assembler = new Assembler(6, this.pieces);
+
     public AncientCityGenerator() {}
     
     public boolean generate(long worldseed, int chunkX, int chunkZ, ChunkRand rand) {
-    	this.worldseed = worldseed;
-        pieces = new ArrayList<>();
+        this.pieces.clear();
+        this.worldseed = worldseed;
 
         // choose random starting template and rotation
         rand.setCarverSeed(this.worldseed, chunkX, chunkZ, MCVersion.v1_19); // version doesnt matter
@@ -67,16 +69,15 @@ public class AncientCityGenerator {
         
         // create structure max bounding box
         BlockBox fullBox = new BlockBox(centerX - MAX_DIST, y - MAX_DIST, centerZ - MAX_DIST, centerX + MAX_DIST, y + MAX_DIST, centerZ + MAX_DIST);
-        Assembler assembler = new Assembler(6, this.pieces, y);
-        assembler.pieces.add(piece);
+        this.assembler.pieces.add(piece);
         VoxelShape a = new VoxelShape(fullBox);
         a.inner.add(box);
         piece.voxelShape = a;
         
         // place pieces
-        assembler.placing.addLast(piece);
-        while(!assembler.placing.isEmpty()) {
-            assembler.tryPlacing(assembler.placing.removeFirst(), rand);
+        this.assembler.placing.addLast(piece);
+        while (!this.assembler.placing.isEmpty()) {
+            this.assembler.tryPlacing(this.assembler.placing.removeFirst(), rand);
         }
         
         return true;
@@ -231,7 +232,7 @@ public class AncientCityGenerator {
         BlockRotation[] rotations1 = new BlockRotation[4];
 
         private final Deque<Piece> placing = new ArrayDeque<>();
-        Assembler(int maxDepth, List<Piece> pieces, int heightY) {
+        Assembler(int maxDepth, List<Piece> pieces) {
             this.maxDepth = maxDepth;
             this.pieces = pieces;
             for (int i = 0; i < this.jigsawBlocks1.length; i++) {

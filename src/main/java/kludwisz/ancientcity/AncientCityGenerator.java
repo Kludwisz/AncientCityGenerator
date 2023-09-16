@@ -114,13 +114,9 @@ public class AncientCityGenerator {
         public JigsawBlock nbt;
         public MutableBlockPos pos = new MutableBlockPos();
 //        public BPos pos;
-        public BlockRotation rotation;
+        public BlockDirection front;
         public BlockJigsawInfo() {
 
-        }
-
-        public BlockDirection getFront() {
-            return rotation.rotate(this.nbt.direction1);
         }
         
         public static BlockDirection getOpposite(BlockDirection b){
@@ -143,8 +139,7 @@ public class AncientCityGenerator {
         }
         
         public boolean canAttach(BlockJigsawInfo blockJigsawInfo2, BlockDirection direction) {
-            return direction == getOpposite(blockJigsawInfo2.getFront())
-                    && this.nbt.targetName.equals(blockJigsawInfo2.nbt.name);
+            return (direction.ordinal() ^ 1) == blockJigsawInfo2.front.ordinal() && this.nbt.targetName.equals(blockJigsawInfo2.nbt.name);
         }
     }
 
@@ -181,7 +176,7 @@ public class AncientCityGenerator {
             for (int parentJigsawIndex = 0; parentJigsawIndex < parentJigsawsLen; parentJigsawIndex++) {
                 BlockJigsawInfo parentJigsaw = parentJigsaws[parentJigsawIndex];
 
-                BlockDirection parentJigsawFront = parentJigsaw.getFront();
+                BlockDirection parentJigsawFront = parentJigsaw.front;
                 MutableBlockPos parentJigsawPos = parentJigsaw.pos;
                 BPos childJigsawPos = new BPos(parentJigsawPos.x + parentJigsawFront.getVector().getX(),
                         parentJigsawPos.y + parentJigsawFront.getVector().getY(),
@@ -310,7 +305,7 @@ public class AncientCityGenerator {
             blockJigsawInfo.pos.setRotateOffset(jigsawBlock.relativePos, rotation, BPos.ORIGIN, offset);
 //                blockJigsawInfo.pos.set(this.rotation.rotate(jigsawBlock.relativePos, BPos.ORIGIN).add(offset));
 //                blockJigsawInfo.pos = this.rotation.rotate(jigsawBlock.relativePos, BPos.ORIGIN).add(offset);
-            blockJigsawInfo.rotation = rotation;
+            blockJigsawInfo.front = rotation.rotate(jigsawBlock.direction1);
         }
         Main.shuffle(rand, arr, len);
         return len;

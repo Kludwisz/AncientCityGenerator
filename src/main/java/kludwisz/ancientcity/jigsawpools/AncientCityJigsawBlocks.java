@@ -1,9 +1,11 @@
 package kludwisz.ancientcity.jigsawpools;
 
-import java.util.List;
+import java.util.*;
 
 import com.seedfinding.mccore.util.block.BlockDirection;
+import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
+import kludwisz.ancientcity.AncientCityGenerator;
 
 public class AncientCityJigsawBlocks {
     public static final List<List<JigsawBlock>> JIGSAW_BLOCKS_V2 = List.of(
@@ -347,4 +349,40 @@ public class AncientCityJigsawBlocks {
     		// empty
     		List.of()
     );
+
+	public static JigsawBlock[][] JIGSAW_BLOCKS;
+	static {
+		JIGSAW_BLOCKS = new JigsawBlock[JIGSAW_BLOCKS_V2.size()][];
+		for (int i = 0; i < JIGSAW_BLOCKS.length; i++) {
+			JIGSAW_BLOCKS[i] = JIGSAW_BLOCKS_V2.get(i).toArray(JigsawBlock[]::new);
+		}
+	}
+
+//	public static HashMap<Pair<Integer, String>, Set<BlockDirection>> PIECE_CONNECTION_DIRECTIONS = new HashMap<>();
+//	static {
+////		Set<String> ignoredNames = new HashSet<>();
+////		ignoredNames.add("empty");
+////		ignoredNames.add("bottom");
+////		ignoredNames.add("city_anchor");
+//
+//		for (int i = 0; i < JIGSAW_BLOCKS_V2.size(); i++) {
+//			for (JigsawBlock block : JIGSAW_BLOCKS_V2.get(i)) {
+////				if (ignoredNames.contains(block.name)) continue;
+//
+//				PIECE_CONNECTION_DIRECTIONS.computeIfAbsent(new Pair<>(i, block.name), (p) -> new HashSet<>()).add(AncientCityGenerator.BlockJigsawInfo.getOpposite(block.direction1));
+//			}
+//		}
+//	}
+
+public static HashMap<String, Set<BlockDirection>>[] PIECE_CONNECTION_DIRECTIONS = new HashMap[JIGSAW_BLOCKS_V2.size()];
+	static {
+		for (int i = 0; i < JIGSAW_BLOCKS_V2.size(); i++) {
+			PIECE_CONNECTION_DIRECTIONS[i] = new HashMap<>();
+			for (JigsawBlock block : JIGSAW_BLOCKS_V2.get(i)) {
+//				if (ignoredNames.contains(block.name)) continue;
+
+				PIECE_CONNECTION_DIRECTIONS[i].computeIfAbsent(block.name, (p) -> new HashSet<>()).add(AncientCityGenerator.BlockJigsawInfo.getOpposite(block.direction1));
+			}
+		}
+	}
 }

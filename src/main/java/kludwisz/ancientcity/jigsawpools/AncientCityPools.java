@@ -1,5 +1,7 @@
 package kludwisz.ancientcity.jigsawpools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.seedfinding.mccore.util.data.Pair;
@@ -99,4 +101,20 @@ public class AncientCityPools {
     				new Pair<>(60, 0)
     		)
     );
+
+	public static int[][] CITY_POOLS;
+	static {
+		CITY_POOLS = new int[CITY_POOLS_V2.size()][];
+		ArrayList<Integer> list = new ArrayList<>();
+		for (int i = 0; i < CITY_POOLS_V2.size(); i++) {
+			List<Pair<Integer, Integer>> pool = CITY_POOLS_V2.get(i);
+			for (Pair<Integer, Integer> entry : pool) {
+				for (int k = 0; k < entry.getSecond(); k++) {
+					list.add(entry.getFirst());
+				}
+			}
+			CITY_POOLS[i] = list.stream().mapToInt(e -> e).toArray();
+			list.clear();
+		}
+	}
 }

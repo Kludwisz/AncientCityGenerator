@@ -6,3 +6,9 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+/compiler.xml
+/gradle.xml
+/jarRepositories.xml
+/misc.xml
+/inspectionProfiles/Project_Default.xml
+/vcs.xml

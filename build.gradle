@@ -5,7 +5,7 @@ plugins {
 
 archivesBaseName = 'ancient-city-gen'
 group = 'kludwisz'
-version '1.0.1'
+version '1.0.2'
 
 sourceCompatibility = JavaVersion.VERSION_18
 targetCompatibility = JavaVersion.VERSION_18

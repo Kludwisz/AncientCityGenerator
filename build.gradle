@@ -7,8 +7,8 @@ archivesBaseName = 'ancient-city-gen'
 group = 'kludwisz'
 version '1.0.3'
 
-sourceCompatibility = JavaVersion.VERSION_18
-targetCompatibility = JavaVersion.VERSION_18
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()

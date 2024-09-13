@@ -5,7 +5,7 @@ plugins {
 
 archivesBaseName = 'ancient-city-gen'
 group = 'kludwisz'
-version '1.0.5'
+version '1.0.6'
 
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
@@ -27,6 +27,15 @@ dependencies {
     implementation('com.seedfinding:mc_feature:1.171.9') 	{ transitive = false }
 }
 
-java {
-    withSourcesJar()
+// configure the maven publication
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId = archivesBaseName
+            version = version
+            groupId = group
+
+            from components.java
+        }
+    }
 }

@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
 }
 
-archivesBaseName = 'kludwisz'
+archivesBaseName = 'ancient-city-gen'
 group = 'kludwisz'
 version '1.0'
 
@@ -25,8 +25,4 @@ dependencies {
 	implementation('com.seedfinding:mc_biome:1.171.1') 		{ transitive = false }
 	implementation('com.seedfinding:mc_terrain:1.171.1') 	{ transitive = false }
     implementation('com.seedfinding:mc_feature:1.171.9') 	{ transitive = false }
-}
-
-java {
-    withSourcesJar()
 }

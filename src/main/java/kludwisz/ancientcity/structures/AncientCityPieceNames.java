@@ -37,7 +37,7 @@ public class AncientCityPieceNames {
 			"structures/medium_pillar_1",
 			"structures/medium_ruin_1",
 			"structures/medium_ruin_2",
-			"structures/sauna_1",
+			"structures/sauna_1", // 33
 			"structures/small_ruin_1",
 			"structures/small_ruin_2",
 			"structures/small_statue",

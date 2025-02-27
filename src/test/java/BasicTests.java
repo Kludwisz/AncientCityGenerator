@@ -1,12 +1,17 @@
 import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.util.data.Triplet;
+import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.loot.LootTable;
 import kludwisz.ancientcity.AncientCity;
 import kludwisz.ancientcity.AncientCityGenerator;
+import kludwisz.ancientcity.loot.AncientCityLootTables;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BasicTests {
     @Test
@@ -30,14 +35,56 @@ public class BasicTests {
         }
     }
 
-    // TODO correctness test #1, #2
     @Test
     public void correctnessSmall1() {
+        // TODO
+        long worldseed = 61359933871276778L;
+        AncientCity city = new AncientCity(MCVersion.v1_21);
+        AncientCityGenerator gen = new AncientCityGenerator();
+        ChunkRand rand = new ChunkRand();
 
+        assertEquals(
+                city.getInRegion(worldseed, -2, -1, rand),
+                new CPos(-33, -12)
+        );
+
+        gen.generate(worldseed, -33, -12, rand);
+        var loot = gen.getChestsWithLootSeeds();
+
+        // /setblock -500 -44 -93 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:997619888727288672L}
+        assertFalse(loot.stream()
+                .filter(t -> t.getFirst().equals(new BPos(-500, -44, -93)))
+                .noneMatch(t -> true)
+        );
+
+        // /setblock -507 -50 -113 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city_ice_box",LootTableSeed:2612999286728812835L}
+        assertFalse(loot.stream()
+                .filter(t -> t.getFirst().equals(new BPos(-507, -50, -113)))
+                .noneMatch(t -> true)
+        );
+
+        // /setblock -539 -48 -127 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-6600788429441983510L}
+        assertFalse(loot.stream()
+                .filter(t -> t.getFirst().equals(new BPos(-539, -48, -127)))
+                .noneMatch(t -> true)
+        );
+
+        // /setblock -607 -37 -211 minecraft:chest[facing=south,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:3355793389309942570L}
+        assertFalse(loot.stream()
+                .filter(t -> t.getFirst().equals(new BPos(-607, -37, -211)))
+                .noneMatch(t -> true)
+        );
+
+        // TODO find out why this fails
+        // /setblock -468 -50 -285 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-31581764618057220L}
+        assertFalse(loot.stream()
+                .filter(t -> t.getFirst().equals(new BPos(-468, -50, -285)))
+                .noneMatch(t -> true)
+        );
     }
 
     @Test
     public void correctnessSmall2() {
-
+        // TODO
     }
 }

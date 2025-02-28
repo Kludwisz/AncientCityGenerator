@@ -7,7 +7,7 @@ Thanks to profotoce59 for their VillageGenerator library:  https://github.com/pr
 Thanks to Gaider10 for massively optimizing the generator.
 
 # Installation
-Use Jitpack:                                                                                                                                                        
+`build.gradle`:                                                                                                                                                        
 
 ```
 repositories {

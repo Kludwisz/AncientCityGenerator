@@ -7,9 +7,9 @@ import com.seedfinding.mcfeature.loot.LootContext;
 import com.seedfinding.mcseed.rand.JRand;
 
 public class Main {
-	public static void main(String[] args) {
-		testTime();
-	}
+//	public static void main(String[] args) {
+//		testTime();
+//	}
 	
 	static final AncientCity CITY = new AncientCity(MCVersion.v1_19_2);
 	static final ChunkRand rand = new ChunkRand();
@@ -125,8 +125,7 @@ public class Main {
 			long s = 0;
 			int maxPieces = 0;
 			AncientCityGenerator gen = new AncientCityGenerator();
-			for (int j = 0; j < total; j++) {
-				long seed = j;
+			for (int seed = 0; seed < total; seed++) {
 				CPos chunk = CITY.getInRegion(seed, 0, 0, rand);
 				gen.generate(seed, chunk.getX(), chunk.getZ(), rand);
 				s ^= rand.getSeed();
@@ -136,7 +135,7 @@ public class Main {
 			long point2 = System.nanoTime();
 
 			if (i == 0) {
-				System.out.println("s: " + s + " (should be 133124020872309)");
+//				System.out.println("s: " + s + " (should be 133124020872309)");
 				System.out.println(A + " " + B + " " + C);
 				System.out.println(1.0 * A / B + " " + 1.0 * B / C);
 				System.out.println(1.0 * A / C);

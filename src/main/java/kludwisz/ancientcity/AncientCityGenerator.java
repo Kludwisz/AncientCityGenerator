@@ -89,7 +89,7 @@ public class AncientCityGenerator {
         int centerX = (startPieceBox.minX + startPieceBox.maxX) / 2;
         int centerZ = (startPieceBox.minZ + startPieceBox.maxZ) / 2;
         int centerY = startPieceBox.minY + 1;
-        int y = startPiecePos.y + 1;
+        int y = startPiecePos.y;
 
         // create the first piece
         startPiece.id = startPieceId;
@@ -198,11 +198,11 @@ public class AncientCityGenerator {
                     int len2 = getShuffledJigsawBlocks(rand, arr2, childPieceId, childPieceRotation, MutableBlockPos.ORIGIN);
                     for (int ji2 = 0; ji2 < len2; ji2++) {
                         BlockJigsawInfo childJigsaw = arr2[ji2];
-                        Main.A += 1;
+                        //Main.A += 1;
 
                         if (!parentJigsaw.canAttach(childJigsaw, parentJigsawFront)) continue;
 
-                        Main.B += 1;
+                        //Main.B += 1;
 
                         MutableBlockPos childJigsawOffset = childJigsaw.pos;
                         childPiecePos.set(
@@ -219,7 +219,7 @@ public class AncientCityGenerator {
 
                         if (!isInsideFreeSpace(freeSpace, childPieceBox)) continue;
 
-                        Main.C += 1;
+                        //Main.C += 1;
 
                         freeSpace.cutout.add(childPieceBox);
 
@@ -233,6 +233,7 @@ public class AncientCityGenerator {
 
                         if (childPieceDepth <= MAX_DEPTH) {
                             this.placing.addLast(childPiece);
+                            //System.out.println(childPieceDepth + " -> " + rand.getSeed());
                         }
 
                         continue nextParentJigsaw;
@@ -362,11 +363,11 @@ public class AncientCityGenerator {
             Piece p = this.pieces[pieceIndex];
 
             List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT_V2.get(p.id);
-    		if (chests==null || chests.size() == 0) 
+    		if (chests==null || chests.isEmpty())
     			continue;
     		
     		for (Pair<BPos, LootTable> chest : chests) {
-    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN).add(new BPos(0,-1,0));
+    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN);
     			BPos realChestPos = p.pos.toImmutable().add(rotatedOffset);
     			result.add(new Pair<>(realChestPos, chest.getSecond()));
     		}
@@ -384,11 +385,11 @@ public class AncientCityGenerator {
             Piece p = this.pieces[pieceIndex];
     		
     		List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT_V2.get(p.id);
-    		if (chests==null || chests.size() == 0) 
+    		if (chests==null || chests.isEmpty())
     			continue;	 
 
     		for (Pair<BPos, LootTable> chest : chests) {
-    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN).add(new BPos(0,-1,0));
+    			BPos rotatedOffset = chest.getFirst().transform(BlockMirror.NONE, p.rotation, BPos.ORIGIN);
     			BPos realChestPos = p.pos.toImmutable().add(rotatedOffset);
     			CPos chestChunkPos = realChestPos.toChunkPos();
     			
@@ -415,7 +416,7 @@ public class AncientCityGenerator {
             Piece p = this.pieces[pieceIndex];
 
     		List<Pair<BPos, LootTable>> chests = AncientCityStructureLoot.STRUCTURE_LOOT_V2.get(p.id);
-    		if (chests==null || chests.size() == 0) 
+    		if (chests==null || chests.isEmpty())
     			continue;	 
 
     		for (Pair<BPos, LootTable> chest : chests) {

@@ -9,7 +9,7 @@ import com.seedfinding.mcfeature.loot.LootTable;
 import kludwisz.ancientcity.loot.AncientCityLootTables;
 
 public class AncientCityStructureLoot {
-	public static final List< List<Pair<BPos,LootTable>> > STRUCTURE_LOOT_V2 = List.of(
+	public static final List< List<Pair<BPos,LootTable>> > STRUCTURE_LOOT_V2 = List.<List<Pair<BPos, LootTable>>>of(
 			List.of(),
 			List.of(),
 			List.of(),
@@ -17,7 +17,7 @@ public class AncientCityStructureLoot {
 			List.of(),
 			List.of(),
 			List.of(),
-			List.of(// single gap
+			List.of(// single golden apple
 					// new Pair<>(new BPos(9,8,20), AncientCityLootTables.NULL.get())
 				),
 			List.of(),

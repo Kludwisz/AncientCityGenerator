@@ -33,7 +33,7 @@ import kludwisz.util.VoxelShape;
 
 public class AncientCityGenerator {
     private static final int MAX_DIST = 116; // max distance from city anchor
-    public static final int MAX_DEPTH = 6;
+    public static final int MAX_DEPTH = 7;
 
     public static final BlockRotation[] BLOCK_ROTATIONS = BlockRotation.values();
 
@@ -231,7 +231,7 @@ public class AncientCityGenerator {
 
                         this.piecesLen += 1;
 
-                        if (childPieceDepth <= MAX_DEPTH){
+                        if (childPieceDepth <= MAX_DEPTH) {
                             this.placing.addLast(childPiece);
                         }
 
@@ -330,58 +330,6 @@ public class AncientCityGenerator {
         }
         Main.shuffle(rand, arr, len);
         return len;
-
-//        	List<JigsawBlock> blocks = AncientCityJigsawBlocks.JIGSAW_BLOCKS_V2.get(this.id);
-//            if (blocks.isEmpty())
-//            	return List.of();
-
-//            BlockJigsawInfo[] arr = new BlockJigsawInfo[blocks.size()];
-//            for (int i = 0; i < blocks.size(); i++) {
-//                JigsawBlock b = blocks.get(i);
-//                arr[i] = new BlockJigsawInfo(b, rotation.rotate(b.relativePos, new BPos(0,0,0)).add(offset), rotation );
-//            }
-//
-//            switch (blocks.size()) {
-//                case 5: {
-//                    int i = rand.nextInt(5);
-//                    BlockJigsawInfo tmp = arr[4];
-//                    arr[4] = arr[i];
-//                    arr[i] = tmp;
-//                }
-//                case 4: {
-//                    int i = rand.nextInt(4);
-//                    BlockJigsawInfo tmp = arr[3];
-//                    arr[3] = arr[i];
-//                    arr[i] = tmp;
-//                }
-//                case 3: {
-//                    int i = rand.nextInt(3);
-//                    BlockJigsawInfo tmp = arr[2];
-//                    arr[2] = arr[i];
-//                    arr[i] = tmp;
-//                }
-//                case 2: {
-//                    int i = rand.nextInt(2);
-//                    BlockJigsawInfo tmp = arr[1];
-//                    arr[1] = arr[i];
-//                    arr[i] = tmp;
-//                }
-//                case 1: {
-//                } break;
-//                default:
-//                    throw new RuntimeException("Unhandled");
-//            }
-//
-//            return Arrays.asList(arr);
-
-//            List<BlockJigsawInfo> list = new ArrayList<>(blocks.size());
-//
-//            for (JigsawBlock b : blocks) {
-//                BlockJigsawInfo blockJigsawInfo = new BlockJigsawInfo(b, rotation.rotate(b.relativePos, new BPos(0,0,0)).add(offset), rotation );
-//                list.add(blockJigsawInfo);
-//            }
-//            rand.shuffle(list);
-//            return list;
     }
     
     private static int getShuffledTemplatesFromPool(JRand rand, int poolId, int[] arr) {

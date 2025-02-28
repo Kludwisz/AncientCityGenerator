@@ -36,22 +36,6 @@ public class BasicTests {
     }
 
     @Test
-    public void visualizeError() {
-        long worldseed = 61359933871276778L;
-        AncientCity city = new AncientCity(MCVersion.v1_21);
-        AncientCityGenerator gen = new AncientCityGenerator();
-        ChunkRand rand = new ChunkRand();
-        gen.generate(worldseed, -33, -12, rand);
-
-        for (AncientCityGenerator.Piece piece : gen.pieces) {
-            BPos posMin = new BPos(piece.box.minX, piece.box.minY, piece.box.minZ);
-            BPos posMax = new BPos(piece.box.maxX, piece.box.maxY, piece.box.maxZ);
-            System.out.println("-- " + piece.getName() + "\nmin: /tp " + posMin.getX() + " " + posMin.getY() + " " + posMin.getZ());
-            System.out.println("max: /tp " + posMax.getX() + " " + posMax.getY() + " " + posMax.getZ());
-        }
-    }
-
-    @Test
     public void correctnessSmall1() {
         // TODO
         long worldseed = 61359933871276778L;
@@ -91,8 +75,6 @@ public class BasicTests {
                 .noneMatch(t -> true)
         );
 
-        // TODO find out why this fails
-        // FIXME FAILS IN ALL VERSIONS !!!!!!!!!!!!!!!!!
         // /setblock -468 -50 -285 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-31581764618057220L}
         assertFalse(loot.stream()
                 .filter(t -> t.getFirst().equals(new BPos(-468, -50, -285)))

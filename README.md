@@ -26,6 +26,6 @@ dependencies {
 	implementation('com.seedfinding:mc_terrain:1.171.1') { transitive = false }
 	implementation('com.seedfinding:mc_feature:1.171.9') { transitive = false }
 
-	implementation('com.github.Kludwisz:AncientCityGenerator:1.3')
+	implementation('com.github.Kludwisz:AncientCityGenerator:1.4')
 }
 ```

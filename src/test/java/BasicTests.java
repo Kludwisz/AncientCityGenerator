@@ -171,6 +171,62 @@ public class BasicTests {
         assertChest(loot, new BPos(-285, -44, 109), -2316816250189487402L);
     }
 
+    @Test
+    public void correctnessSmall4() {
+        // all chests in one ancient city
+        long worldseed = 5629499605952483L;
+        AncientCity city = new AncientCity(MCVersion.v1_21);
+        AncientCityGenerator gen = new AncientCityGenerator();
+        ChunkRand rand = new ChunkRand();
+
+        assertEquals(
+                city.getInRegion(worldseed, 0, 0, rand),
+                new CPos(11, 15)
+        );
+
+        gen.generate(worldseed, 11, 15, rand);
+        var loot = gen.getChestsWithLootSeeds();
+
+        // /setblock 200 -48 187 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:3355977973470222518L}
+        assertChest(loot, new BPos(200, -48, 187), 3355977973470222518L);
+        // /setblock 144 -48 147 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:8188004064560376794L}
+        assertChest(loot, new BPos(144, -48, 147), 8188004064560376794L);
+        // /setblock 112 -49 150 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-8065620230336892132L}
+        assertChest(loot, new BPos(112, -49, 150), -8065620230336892132L);
+        // /setblock 108 -37 180 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-3029017634404009459L}
+        assertChest(loot, new BPos(108, -37, 180), -3029017634404009459L);
+        // /setblock 116 -49 223 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-448443806436091715L}
+        assertChest(loot, new BPos(116, -49, 223), -448443806436091715L);
+        // /setblock 133 -50 222 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:2817044650666382246L}
+        assertChest(loot, new BPos(133, -50, 222), 2817044650666382246L);
+        // /setblock 100 -48 250 minecraft:chest[facing=west,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:3733255357618154214L}
+        assertChest(loot, new BPos(100, -48, 250), 3733255357618154214L);
+        // /setblock 82 -48 250 minecraft:chest[facing=west,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:7521299613044481075L}
+        assertChest(loot, new BPos(82, -48, 250), 7521299613044481075L);
+        // /setblock 120 -49 281 minecraft:chest[facing=south,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:5807208324500262700L}
+        assertChest(loot, new BPos(120, -49, 281), 5807208324500262700L);
+        // /setblock 191 -50 318 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-8359398520650183157L}
+        assertChest(loot, new BPos(191, -50, 318), -8359398520650183157L);
+        // /setblock 195 -50 310 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-7622827582828302096L}
+        assertChest(loot, new BPos(195, -50, 310), -7622827582828302096L);
+        // /setblock 204 -50 309 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:8500817487952519723L}
+        assertChest(loot, new BPos(204, -50, 309), 8500817487952519723L);
+        // /setblock 233 -50 285 minecraft:chest[facing=north,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-9081806113123411631L}
+        assertChest(loot, new BPos(233, -50, 285), -9081806113123411631L);
+        // /setblock 239 -44 289 minecraft:chest[facing=west,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-8846764236100975304L}
+        assertChest(loot, new BPos(239, -44, 289), -8846764236100975304L);
+        // /setblock 270 -50 273 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:1080795490753163248L}
+        assertChest(loot, new BPos(270, -50, 273), 1080795490753163248L);
+        // /setblock 269 -47 259 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:4317814274566571275L}
+        assertChest(loot, new BPos(269, -47, 259), 4317814274566571275L);
+        // /setblock 269 -47 251 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-3681187241076557748L}
+        assertChest(loot, new BPos(269, -47, 251), -3681187241076557748L);
+        // /setblock 270 -50 199 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-2204578251156812784L}
+        assertChest(loot, new BPos(270, -50, 199), -2204578251156812784L);
+        // /setblock 234 -48 221 minecraft:chest[facing=east,type=single,waterlogged=false]{LootTable:"minecraft:chests/ancient_city",LootTableSeed:-5389396639414360631L}
+        assertChest(loot, new BPos(234, -48, 221), -5389396639414360631L);
+    }
+
     private void assertChest(List<Triplet<BPos, LootTable, Long>> loot, BPos pos, long lootseed) {
         assertFalse(loot.stream()
                 .filter(t -> t.getFirst().equals(pos))

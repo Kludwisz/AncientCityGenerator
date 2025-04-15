@@ -30,21 +30,24 @@ public class MutableBlockPos {
     }
 
     public MutableBlockPos rotate(BlockRotation rotation) {
+        final int prevX = this.x;
+        final int prevZ = this.z;
+
         switch (rotation) {
             case NONE -> {
 
             }
             case CLOCKWISE_90 -> {
-                this.x = -this.z;
-                this.z = this.x;
+                this.x = -prevZ;
+                this.z = prevX;
             }
             case CLOCKWISE_180 -> {
-                this.x = -this.x;
-                this.z = -this.z;
+                this.x = -prevX;
+                this.z = -prevZ;
             }
             case COUNTERCLOCKWISE_90 -> {
-                this.x = this.z;
-                this.z = -this.x;
+                this.x = prevZ;
+                this.z = -prevX;
             }
         }
         return this;
